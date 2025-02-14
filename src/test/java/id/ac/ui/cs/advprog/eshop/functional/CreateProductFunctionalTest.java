@@ -16,27 +16,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
-class CreateProductFunctionalTest {
+class CreateProductFunctionalTest extends BaseFunctionalTest{
 
-    /**
-     * The port number assigned to the running application during test execution.
-     * Set automatically during each test run by Spring Framework's test context.
-     */
-    @LocalServerPort
-    private int serverPort;
-
-    /**
-     * The base URL for testing. Default to {@code http://localhost}.
-     */
-    @Value("${app.baseUrl:http://localhost}")
-    private String testBaseUrl;
-
-    private String baseUrl;
-
-    @BeforeEach
-    void setupTest() {
-        baseUrl = String.format("%s:%d", testBaseUrl, serverPort);
-    }
 
     @Test
     void createProduct_andVerifyInList(ChromeDriver driver) throws Exception {
