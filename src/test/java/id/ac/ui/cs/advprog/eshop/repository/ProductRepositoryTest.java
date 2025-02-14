@@ -92,6 +92,80 @@ class ProductRepositoryTest {
 
     }
 
+    @Test
+    void testUpdateProduct() {
+        ProductRepository productRepository = new ProductRepository();
+        Product product = new Product();
+        product.setProductName("Test Product");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        Product updatedProduct = new Product();
+        updatedProduct.setProductId(product.getProductId());
+        updatedProduct.setProductName("Updated Product");
+        updatedProduct.setProductQuantity(20);
+
+        Product result = productRepository.update(updatedProduct);
+
+        assertNotNull(result);
+        assertEquals("Updated Product", result.getProductName());
+        assertEquals(20, result.getProductQuantity());
+
+        Product retrievedProduct = productRepository.findById(product.getProductId());
+        assertNotNull(retrievedProduct);
+        assertEquals("Updated Product", retrievedProduct.getProductName());
+        assertEquals(20, retrievedProduct.getProductQuantity());
+    }
+
+    @Test
+    void testUpdateNonExistentProduct() {
+        ProductRepository productRepository = new ProductRepository();
+        Product product = new Product();
+        product.setProductName("Test Product");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        Product nonExistentProduct = new Product();
+        nonExistentProduct.setProductId("non-existent-id");
+        nonExistentProduct.setProductName("Non Existent Product");
+        nonExistentProduct.setProductQuantity(30);
+
+        Product result = productRepository.update(nonExistentProduct);
+
+        assertNull(result);
+    }
+
+    @Test
+    void testDeleteProduct() {
+        ProductRepository productRepository = new ProductRepository();
+        Product product = new Product();
+        product.setProductName("Test Product");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        productRepository.deleteById(product.getProductId());
+
+        Product retrievedProduct = productRepository.findById(product.getProductId());
+        assertNull(retrievedProduct);
+
+        Iterator<Product> productIterator = productRepository.findAll();
+        assertFalse(productIterator.hasNext());
+    }
+
+    @Test
+    void testDeleteNonExistentProduct() {
+        ProductRepository productRepository = new ProductRepository();
+        Product product = new Product();
+        product.setProductName("Test Product");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+
+        productRepository.deleteById("non-existent-id");
+
+        Product retrievedProduct = productRepository.findById(product.getProductId());
+        assertNotNull(retrievedProduct);
+    }
+
 
 
 }
