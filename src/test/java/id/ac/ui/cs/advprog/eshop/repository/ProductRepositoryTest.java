@@ -166,6 +166,19 @@ class ProductRepositoryTest {
         assertNotNull(retrievedProduct);
     }
 
+    @Test
+    void testFindByIdWhenProductDoesNotExist() {
+        Product product = new Product();
+        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        Product foundProduct = productRepository.findById("non-existent-id");
+
+        assertNull(foundProduct);
+    }
+
 
 
 }
