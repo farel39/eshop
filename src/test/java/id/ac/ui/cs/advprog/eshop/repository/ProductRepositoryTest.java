@@ -95,7 +95,6 @@ class ProductRepositoryTest {
 
     @Test
     void testUpdateProduct() {
-        ProductRepository productRepository = new ProductRepository();
         Product product = new Product();
         product.setProductName("Test Product");
         product.setProductQuantity(10);
@@ -120,7 +119,6 @@ class ProductRepositoryTest {
 
     @Test
     void testUpdateNonExistentProduct() {
-        ProductRepository productRepository = new ProductRepository();
         Product product = new Product();
         product.setProductName("Test Product");
         product.setProductQuantity(10);
@@ -138,7 +136,6 @@ class ProductRepositoryTest {
 
     @Test
     void testDeleteProduct() {
-        ProductRepository productRepository = new ProductRepository();
         Product product = new Product();
         product.setProductName("Test Product");
         product.setProductQuantity(10);
@@ -155,7 +152,6 @@ class ProductRepositoryTest {
 
     @Test
     void testDeleteNonExistentProduct() {
-        ProductRepository productRepository = new ProductRepository();
         Product product = new Product();
         product.setProductName("Test Product");
         product.setProductQuantity(10);
