@@ -11,6 +11,11 @@ class EshopApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// This method is intentionally left empty.
+		// Nested Explanation:
+		// - This is a standard test in Spring Boot applications.
+		// - It verifies that the application context loads without any issues.
+		// - If the application fails to start due to configuration issues, this test will fail.
 	}
 
 	@Test
