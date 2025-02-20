@@ -19,6 +19,7 @@ class ProductRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        // No setup required for now;
     }
 
     @Test
@@ -94,7 +95,6 @@ class ProductRepositoryTest {
 
     @Test
     void testUpdateProduct() {
-        ProductRepository productRepository = new ProductRepository();
         Product product = new Product();
         product.setProductName("Test Product");
         product.setProductQuantity(10);
@@ -119,7 +119,6 @@ class ProductRepositoryTest {
 
     @Test
     void testUpdateNonExistentProduct() {
-        ProductRepository productRepository = new ProductRepository();
         Product product = new Product();
         product.setProductName("Test Product");
         product.setProductQuantity(10);
@@ -137,7 +136,6 @@ class ProductRepositoryTest {
 
     @Test
     void testDeleteProduct() {
-        ProductRepository productRepository = new ProductRepository();
         Product product = new Product();
         product.setProductName("Test Product");
         product.setProductQuantity(10);
@@ -154,7 +152,6 @@ class ProductRepositoryTest {
 
     @Test
     void testDeleteNonExistentProduct() {
-        ProductRepository productRepository = new ProductRepository();
         Product product = new Product();
         product.setProductName("Test Product");
         product.setProductQuantity(10);
@@ -164,6 +161,19 @@ class ProductRepositoryTest {
 
         Product retrievedProduct = productRepository.findById(product.getProductId());
         assertNotNull(retrievedProduct);
+    }
+
+    @Test
+    void testFindByIdWhenProductDoesNotExist() {
+        Product product = new Product();
+        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        Product foundProduct = productRepository.findById("non-existent-id");
+
+        assertNull(foundProduct);
     }
 
 
