@@ -19,7 +19,7 @@ class ProductRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // No setup required for now;
+        // No setup required for now
     }
 
     @Test
