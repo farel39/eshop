@@ -3,7 +3,6 @@ val seleniumJupiterVersion = "5.0.1"
 val webdrivermanagerVersion = "5.6.3"
 val junitJupiterVersion = "5.9.1"
 
-
 plugins {
 	java
 	jacoco
@@ -32,20 +31,28 @@ repositories {
 }
 
 dependencies {
+	// Spring Boot dependencies
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+	// Lombok (Compile Only)
+	compileOnly("org.projectlombok:lombok")
+
+	// Annotation Processors
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
+
+	// Testing dependencies
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+	testImplementation("org.mockito:mockito-core")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	// Selenium & WebDriver dependencies for UI Testing
 	testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
 	testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
 	testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
-	testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
-	testImplementation("org.mockito:mockito-core")
-
 }
 
 tasks.register<Test>(name = "unitTest") {
@@ -79,7 +86,7 @@ tasks.test {
 
 tasks.jacocoTestReport {
 	dependsOn(tasks.test)
-	reports{
+	reports {
 		xml.required = true
 		html.required = true
 	}
