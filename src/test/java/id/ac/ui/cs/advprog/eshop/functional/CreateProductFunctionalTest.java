@@ -20,7 +20,7 @@ class CreateProductFunctionalTest extends BaseFunctionalTest{
 
 
     @Test
-    void createProduct_andVerifyInList(ChromeDriver driver) throws Exception {
+    void createProduct_andVerifyInList(ChromeDriver driver) {
         // Navigate to the Create New Product page
         driver.get(baseUrl + "/product/create");
 
