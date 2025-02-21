@@ -12,7 +12,6 @@ class HomeControllerTest {
     void testHomePage() {
         // Arrange
         HomeController homeController = new HomeController();
-        Model model = mock(Model.class); // Mock the Model object
 
         // Act
         String viewName = homeController.homePage();
