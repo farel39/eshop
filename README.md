@@ -172,6 +172,127 @@ void setUp() {
 ```java
    ProductRepository productRepository = new ProductRepository();
 ```
+
+- Maintainability issue where a unit test doesn't use assertion in EshopApplicationTests.java. I fixed it by adding an assertion.
+
+Previous code:
+```java
+@Test
+void testMain() {
+    SpringApplication mockSpringApp = mock(SpringApplication.class);
+    EshopApplication.main(new String[]{});
+}
+
+```
+
+New code:
+```java
+@Test
+	void testMain() {
+		assertDoesNotThrow(() -> EshopApplication.main(new String[]{}));
+	}
+```
+
+- Maintainability issue where there is useless assignment to local variable "model". I fixed it by removing this line of code in HomeControllerTest.java
+```java
+Model model = mock(Model.class); // Mock the Model object
+```
+
+- Maintainability issue where there is field injection but instead use constructor injection instead. I fixed it by removing replacing the code below with a new one in ProductController.java and ProductServiceImpl.java
+
+Previous code (ProductController.java):
+```java
+@Autowired
+    private ProductService service;
+```
+
+New code:
+```java
+private final ProductService service;
+
+    public ProductController(ProductService service) {
+        this.service = service;
+    }
+
+```
+
+Previous code (ProductServiceImpl.java):
+```java
+@Autowired
+    private ProductRepository productRepository;
+```
+
+New code:
+```java
+
+private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+```
+
+
+- Maintainability issue where there is unused import. I discard unused imports which are lines of codes below:
+```java
+// In CreateProductFunctionalTest.java
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Value;
+
+// In EshopApplicationTests.java
+import org.springframework.boot.SpringApplication;
+
+// In HomeControllerTest.java
+import org.springframework.ui.Model;
+import static org.mockito.Mockito.mock;
+```
+
+- Maintainability issue where there is declaration of thrown exception, but it cannot be thrown in the method. I fixed it by removing "throw Exception" on every method below:
+
+```java
+// In CreateProductFunctionalTest.java
+void createProduct_andVerifyInList(ChromeDriver driver) throws Exception {};
+
+// HomePageFunctionalTest.java
+void pageTitle_isCorrect(ChromeDriver driver) throws Exception {}
+void welcomeMessage_homePage_isCorrect(ChromeDriver driver) throws Exception {}
+```
+
+- Maintainability issue where i shouldn't use lambda with method reference. I fixed it by changing the lines of code below in ProductListFunctionalTest.java
+
+Previous code:
+```java
+driver.findElements(By.cssSelector("a[href^='/product/delete/']")).forEach(deleteButton -> {
+            deleteButton.click();
+        });
+```
+
+New code:
+```java
+driver.findElements(By.cssSelector("a[href^='/product/delete/']")).forEach(WebElement::click);
+    }
+
+```
+- Maintainability issue where the comments shouldn't end with ";" as it indicate a commented line of code. I removed the ";" in ProductRepositoryTest.java.
+
+Previous code:
+```java
+@BeforeEach
+    void setUp() {
+        // No setup required for now;
+    }
+```
+
+New code:
+```java
+@BeforeEach
+    void setUp() {
+        // No setup required for now
+    }
+```
+
+- Maintainability issue where i should group dependencies by their destination. I fixed it by grouping it.
+
 ## 2. Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!
 My current implementation meets the definition of Continuous Integration (CI) and Continuous Deployment (CD) for several reasons.
 
