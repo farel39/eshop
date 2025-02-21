@@ -34,6 +34,8 @@ dependencies {
 	// Spring Boot dependencies
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+
+	// Development only
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
 	// Lombok (Compile Only)
@@ -47,12 +49,12 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 	testImplementation("org.mockito:mockito-core")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-	// Selenium & WebDriver dependencies for UI Testing
 	testImplementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
 	testImplementation("io.github.bonigarcia:selenium-jupiter:$seleniumJupiterVersion")
 	testImplementation("io.github.bonigarcia:webdrivermanager:$webdrivermanagerVersion")
+
+	// Testing runtime dependencies
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.register<Test>(name = "unitTest") {
