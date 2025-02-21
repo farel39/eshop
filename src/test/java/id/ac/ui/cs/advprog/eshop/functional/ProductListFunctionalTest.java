@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.eshop.functional;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,10 +64,9 @@ class ProductListFunctionalTest extends BaseFunctionalTest {
         driver.get(baseUrl + "/product/list");
 
         // Find all delete buttons and click them
-        driver.findElements(By.cssSelector("a[href^='/product/delete/']")).forEach(deleteButton -> {
-            deleteButton.click();
-        });
+        driver.findElements(By.cssSelector("a[href^='/product/delete/']")).forEach(WebElement::click);
     }
+
 
     private void deleteProduct(ChromeDriver driver, String productName) {
         // Navigate to the product list page
