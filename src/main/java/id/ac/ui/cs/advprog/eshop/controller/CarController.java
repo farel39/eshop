@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/car")
 public class CarController {
 
+    private static final String REDIRECT_CAR_LIST = "redirect:/car/list";
     private final CarService carService;
 
     public CarController(CarService carService) {
@@ -25,7 +26,7 @@ public class CarController {
     @PostMapping("/create")
     public String createCarPost(@ModelAttribute Car car) {
         carService.create(car);
-        return "redirect:/car/list";
+        return REDIRECT_CAR_LIST;
     }
 
     @GetMapping("/list")
@@ -44,12 +45,12 @@ public class CarController {
     @PostMapping("/edit")
     public String editCarPost(@ModelAttribute Car car) {
         carService.update(car);
-        return "redirect:/car/list";
+        return REDIRECT_CAR_LIST;
     }
 
     @GetMapping("/delete/{carId}")
     public String deleteCar(@PathVariable String carId) {
         carService.deleteById(carId);
-        return "redirect:/car/list";
+        return REDIRECT_CAR_LIST;
     }
 }
