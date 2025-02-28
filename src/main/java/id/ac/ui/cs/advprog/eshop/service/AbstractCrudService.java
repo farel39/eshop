@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class AbstractCrudService<T, ID> implements CrudService<T, ID> {
+public abstract class AbstractCrudService<T, I> implements CrudService<T, I> {
 
     // Each concrete service must supply its own repository
-    protected abstract CrudRepository<T, ID> getRepository();
+    protected abstract CrudRepository<T, I> getRepository();
 
     @Override
     public T create(T entity) {
@@ -25,7 +25,7 @@ public abstract class AbstractCrudService<T, ID> implements CrudService<T, ID> {
     }
 
     @Override
-    public T findById(ID id) {
+    public T findById(I id) {
         return getRepository().findById(id);
     }
 
@@ -36,7 +36,7 @@ public abstract class AbstractCrudService<T, ID> implements CrudService<T, ID> {
     }
 
     @Override
-    public void deleteById(ID id) {
+    public void deleteById(I id) {
         getRepository().deleteById(id);
     }
 }
