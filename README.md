@@ -1,6 +1,7 @@
 - [Deployment URL](https://involved-renata-farel39-60683431.koyeb.app/)
 - [Module 1 Reflection](#module-1)
 - [Module 2 Reflection](#module-2)
+- [Module 3 Reflection](#module-3)
 
 # Module 1
 ## Reflection 1
@@ -188,9 +189,9 @@ void testMain() {
 New code:
 ```java
 @Test
-	void testMain() {
-		assertDoesNotThrow(() -> EshopApplication.main(new String[]{}));
-	}
+void testMain() {
+    assertDoesNotThrow(() -> EshopApplication.main(new String[]{}));
+}
 ```
 
 - Maintainability issue where there is useless assignment to local variable "model". I fixed it by removing this line of code in HomeControllerTest.java
@@ -203,23 +204,23 @@ Model model = mock(Model.class); // Mock the Model object
 Previous code (ProductController.java):
 ```java
 @Autowired
-    private ProductService service;
+private ProductService service;
 ```
 
 New code:
 ```java
 private final ProductService service;
 
-    public ProductController(ProductService service) {
-        this.service = service;
-    }
+public ProductController(ProductService service) {
+    this.service = service;
+}
 
 ```
 
 Previous code (ProductServiceImpl.java):
 ```java
 @Autowired
-    private ProductRepository productRepository;
+private ProductRepository productRepository;
 ```
 
 New code:
@@ -227,9 +228,9 @@ New code:
 
 private final ProductRepository productRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+public ProductServiceImpl(ProductRepository productRepository) {
+    this.productRepository = productRepository;
+}
 ```
 
 
@@ -263,7 +264,7 @@ void welcomeMessage_homePage_isCorrect(ChromeDriver driver) throws Exception {}
 Previous code:
 ```java
 driver.findElements(By.cssSelector("a[href^='/product/delete/']")).forEach(deleteButton -> {
-            deleteButton.click();
+        deleteButton.click();
         });
 ```
 
@@ -278,17 +279,17 @@ driver.findElements(By.cssSelector("a[href^='/product/delete/']")).forEach(WebEl
 Previous code:
 ```java
 @BeforeEach
-    void setUp() {
-        // No setup required for now;
-    }
+void setUp() {
+    // No setup required for now;
+}
 ```
 
 New code:
 ```java
 @BeforeEach
-    void setUp() {
-        // No setup required for now
-    }
+void setUp() {
+    // No setup required for now
+}
 ```
 
 - Maintainability issue where i should group dependencies by their destination. I fixed it by grouping it.
@@ -303,3 +304,256 @@ My current implementation meets the definition of Continuous Integration (CI) an
 - Automated Deployment on Main Branch Updates (CD): Since Koyeb automatically deploys new changes when updates are pushed to the main branch, my pipeline supports Continuous Deployment (CD). This means every approved and merged change is immediately available in production without manual intervention, ensuring fast and reliable releases.
 
 - Infrastructure Automation (CD): By leveraging GitHub Actions to handle builds, tests, and security checks, combined with Koyeb’s automatic deployment, my pipeline minimizes human intervention. This ensures a seamless and scalable CI/CD workflow, enabling rapid iterations and reducing downtime.
+
+# Module 3
+
+## 1. Explain what principles you apply to your project!
+
+
+---
+
+### a. Single Responsibility Principle (SRP)
+
+#### Overview
+SRP states that every class or module should have only one reason to change. This leads to a clear separation of concerns and simplifies maintenance.
+
+#### Application in My Project
+
+- **Controller Layer:**  
+  Each controller is dedicated for only handling HTTP requests for its specific domain.
+    - **Before SRP:**
+      ```java
+      public class CarController extends ProductController {
+          // Combined product and car-specific logic
+      }
+      ```
+    - **After SRP:**
+      ```java
+      public class CarController {
+          // Dedicated car-related request handling
+      }
+      ```
+
+- **Service Layer:**  
+  Service classes like `CarServiceImpl` and `ProductServiceImpl` only encapsulate business logic.
+
+
+- **Repository Layer:**  
+  Each repository (e.g., `CarRepository`, `ProductRepository`) only manages data persistence for its respective entity.
+
+
+- **Model Layer:**  
+  Model classes such as `Car` and `Product` define core data structures with minimal domain logic.
+
+
+---
+
+
+
+### b. Liskov Substitution Principle (LSP)
+#### Overview
+The Liskov Substitution Principle (LSP) requires that objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program. In other words, every subclass must adhere to the contract defined by its superclass so that substituting the superclass with any subclass does not lead to unexpected behaviors or errors.
+
+#### Application in My Project
+
+- **Repository Layer:**
+    - `AbstractRepository` defines a generic CRUD interface, establishing a clear contract for data operations.
+    - Both `CarRepository` and `ProductRepository` extend `AbstractRepository` but doesn't change the basic CRUD operation (legacy methods), ensuring they can be substituted seamlessly in any context where an `AbstractRepository` is required.
+
+- **Service Layer:**
+    - `AbstractCrudService` offers standard CRUD operations and defines abstract methods that set a precise contract for data handling.
+    - Concrete services (e.g., `CarServiceImpl` and `ProductServiceImpl`) use the standard CRUD operations given by `AbstractCrudService` and just implement the abstract `getRepository()` method, adhering strictly to its contract. This guarantees that any service using `AbstractCrudService` can reliably work with these concrete implementations, in line with the LSP.
+
+- **Model Layer:**
+    - The abstract `Item` class defines common properties (e.g., `id`, `name`, `quantity`), serving as a blueprint for all items in the system.
+    - Subclasses (`Car` and `Product`) extend `Item` and implement these properties while preserving the behavior specified by `Item`. This allows objects of `Car` or `Product` to be used interchangeably with `Item`, fully satisfying the LSP.
+
+
+### c. Open/Closed Principle (OCP)
+
+#### Overview
+OCP states that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. In practice, this means that the behavior of a system can be extended without altering its existing source code.
+
+#### Application in My Project
+
+- **Repository Layer:**
+    - `AbstractRepository` provides common CRUD functionality as a stable foundation.
+    - Concrete repositories (e.g., `CarRepository` and `ProductRepository`) extend this base class, allowing them to introduce additional behavior without changing the core implementation.
+
+- **Service Layer:**
+    - `AbstractCrudService` offers default CRUD implementations that encapsulate standard operations.
+    - Concrete service classes (e.g., `CarServiceImpl` and `ProductServiceImpl`) extend this service and supply their specific repository implementations without changing the core implementation of `AbstractCrudService`.
+
+- **Model Layer:**
+    - The `Item` class serves as a foundational structure for all entities, establishing a consistent base.
+    - Subclasses like `Car` and `Product` extend `Item` and introduce specialized attributes (e.g., `Car` adds a `color` property). This approach lets me extend entity functionality in a modular way without impacting the base model, ensuring that enhancements or changes are isolated and manageable.
+
+
+
+---
+
+### d. Dependency Inversion Principle (DIP)
+
+#### Overview
+DIP advises that high-level modules should depend on abstractions rather than concrete implementations, reducing coupling and enhancing flexibility.
+
+#### Application in My Project
+
+- **Controller Layer Example:**
+    - **Before DIP:**  
+      The `CarController` depended on a concrete class (`CarServiceImpl`):
+      ```java
+      @Controller
+      @RequestMapping("/car")
+      public class CarController extends ProductController {
+      
+          private final CarServiceImpl carservice;
+      
+          public CarController(ProductService service, CarServiceImpl carservice) {
+              super(service);
+              this.carservice = carservice;
+          }
+          // Additional controller logic
+      }
+      ```
+    - **After DIP:**  
+      The constructor now accepts a `CarService` interface:
+      ```java
+      @Controller
+      @RequestMapping("/car")
+      public class CarController {
+      
+          private final CarService carService;
+      
+          public CarController(CarService carService) {
+              this.carService = carService;
+          }
+          // Additional controller logic
+      }
+      ```
+
+## 2. Advantages of Applying SOLID Principles to My Project
+
+Applying SOLID principles brings significant benefits to the structure, maintainability, and flexibility of my project. Below are the key advantages—with concrete examples from my project—that illustrate why these principles are so valuable:
+
+---
+
+### 1. Improved Maintainability and Clarity
+
+**Single Responsibility Principle (SRP):**
+- **Advantage:** By ensuring that each class or module has one well-defined purpose, I minimize unintended side effects when making changes.
+- **Example:** By separating car-related logic into its own `CarController` (instead of mixing it with generic product logic), I ensure that when a requirement changes for handling car-specific HTTP requests, only the dedicated controller is affected. This clear separation simplifies debugging and future modifications.
+
+---
+
+### 2. Enhanced Interchangeability and Robustness
+
+**Liskov Substitution Principle (LSP):**
+- **Advantage:** LSP guarantees that derived classes (e.g., `Car` and `Product`) can seamlessly replace their base class (`Item`) without causing errors. This enables me to work with a unified interface, confident that the underlying implementations adhere to expected behavior.
+- **Example:** In my repository layer, both `CarRepository` and `ProductRepository` extend a common `AbstractRepository` that defines CRUD operations. As a result, any service relying on this abstract repository can substitute one repository for another without modifying the consuming code. This not only enhances code reliability but also supports future extensions where new item types can be introduced without breaking existing functionality.
+  ```java
+  public class Main {
+      public static void main(String[] args) {
+          // Substitute CarRepository where an AbstractRepository is expected
+          AbstractRepository<Car> carRepository = new CarRepository();
+      }
+  }
+  ```
+
+---
+
+### 3. Increased Extensibility Without Risk
+
+**Open/Closed Principle (OCP):**
+- **Advantage:** OCP ensures that my system’s components can be extended with new behavior without modifying the existing, well-tested code. This reduces the risk of regressions and allows my project to evolve gracefully.
+- **Example:** The design of `AbstractCrudService` provides a stable foundation for CRUD operations. When I need to introduce a new type of entity or additional functionality, I can create a new service that extends this abstract class. The new service only needs to supply its specific repository via an overridden method, leaving the core CRUD logic untouched and secure.
+  ```java
+	  @Service
+	public class CarServiceImpl extends AbstractCrudService<Car, String> implements CarService {
+	
+	    private final CarRepository carRepository;
+	
+	    public CarServiceImpl(CarRepository carRepository) {
+	        this.carRepository = carRepository;
+	    }
+	    // Only needs to supply its specific repository via an overridden method
+	    @Override
+	    protected CrudRepository<Car, String> getRepository() {
+	        return carRepository;
+	    }
+
+            // The core CRUD logic remain untouched and secure
+	}
+  ```
+
+---
+
+### 4. Reduced Coupling and Increased Flexibility
+
+**Dependency Inversion Principle (DIP):**
+- **Advantage:** By depending on abstractions rather than concrete implementations, my project becomes more modular. This decoupling makes unit testing easier and allows for swapping out implementations with minimal disruption.
+- **Example:** The refactored `CarController` now accepts a `CarService` interface instead of a concrete `CarServiceImpl`. This means that the controller is insulated from changes in the service’s implementation and can work with any class that fulfills the `CarService` contract. As a result, I can introduce improvements or replacements to the service layer without needing to alter the controller, which simplifies testing and future enhancements.
+
+---
+
+### 5. Reduced Code Duplication
+
+**Open/Closed Principle (OCP):**
+- **Advantage:** By adhering to the Open/Closed Principle and leveraging abstract CRUD classes, my project minimizes code duplication across the service and repository layers. This design ensures that standard CRUD operations are implemented once and reused across various entities, reducing the risk of errors and easing maintenance.
+- **Example:** Instead of rewriting CRUD operations for each new entity, I use `AbstractRepository` and `AbstractCrudService` as the base classes. For instance, `CarRepository` and `ProductRepository` extend `AbstractRepository` to inherit common data access methods, while `CarServiceImpl` and `ProductServiceImpl` extend `AbstractCrudService` to reuse standard service logic. This modular approach allows for easy extension and maintenance without redundant code changes.
+
+
+
+## 3. Disadvantages of Not Applying SOLID Principles to My Project
+
+When I don't apply SOLID principles, my project faces several challenges. Below are the key disadvantages along with examples that illustrate the potential pitfalls:
+
+### 1. Poor Maintainability and Increased Complexity
+
+- **Lack of Single Responsibility:**  
+  Without SRP, classes or modules tend to handle multiple responsibilities, leading to bloated code that is hard to understand and maintain.
+    - **Example:**  
+      A `CarController` that not only handles HTTP requests but also processes business logic and manages data access can quickly become a tangled mess. This makes debugging difficult and increases the likelihood of introducing bugs when changes are made.
+
+
+### 2. Code Duplication
+
+- **Violating the Open/Closed Principle (OCP):**  
+  When code is duplicated across modules, it indicates a failure to extend existing abstractions for new functionality. Duplicated logic requires modifications in multiple places for even small changes, leading to increased maintenance effort and risk of inconsistencies.
+    - **Example:**  
+      In my before-solid branch `CarServiceImpl` and `ProductServiceImpl` both contain their own versions of CRUD logic. Any alteration to the validation or persistence mechanisms must be replicated across all implementations, increasing the likelihood of errors and making future enhancements more cumbersome.
+      ``` java
+      // CarServiceImpl.java
+      public class CarServiceImpl implements CarService {
+          // Duplicate CRUD methods for Car entity
+          public Car create(Car car) { /* implementation */ }
+          public List<Car> findAll() { /* implementation */ }
+          // Additional CRUD methods...
+      }
+  
+      ```
+      ```java
+      // ProductServiceImpl.java
+      public class ProductServiceImpl implements ProductService {
+          // Duplicate CRUD methods for Product entity
+          public Product create(Product product) { /* implementation */ }
+          public List<Product> findAll() { /* implementation */ }
+          // Additional CRUD methods...
+      ```
+
+### 3. Tight Coupling and Reduced Modularity
+
+- **Ignoring the Dependency Inversion Principle (DIP):**  
+  When high-level modules depend on concrete implementations rather than abstractions, the code becomes tightly coupled. This tight coupling makes it difficult to test and evolve the system.
+    - **Example:**  
+      If my `CarController` directly depends on a specific implementation like `CarServiceImpl` instead of a more abstract `CarService` interface, any change in the service's implementation could require corresponding changes in the controller. This not only complicates unit testing but also reduces flexibility for future enhancements.
+
+
+
+
+
+
+
+
+
+  
