@@ -3,54 +3,19 @@ package id.ac.ui.cs.advprog.eshop.controller;
 import id.ac.ui.cs.advprog.eshop.model.Car;
 import id.ac.ui.cs.advprog.eshop.service.CarService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/car")
-public class CarController {
-
-    private static final String REDIRECT_CAR_LIST = "redirect:/car/list";
-    private final CarService carService;
+public class CarController extends AbstractCrudController<Car, String> {
 
     public CarController(CarService carService) {
-        this.carService = carService;
-    }
-
-    @GetMapping("/create")
-    public String createCarPage(Model model) {
-        model.addAttribute("car", new Car());
-        return "CreateCar";
-    }
-
-    @PostMapping("/create")
-    public String createCarPost(@ModelAttribute Car car) {
-        carService.create(car);
-        return REDIRECT_CAR_LIST;
-    }
-
-    @GetMapping("/list")
-    public String carListPage(Model model) {
-        model.addAttribute("cars", carService.findAll());
-        return "CarList";
-    }
-
-    @GetMapping("/edit/{carId}")
-    public String editCarPage(@PathVariable String carId, Model model) {
-        Car car = carService.findById(carId);
-        model.addAttribute("car", car);
-        return "EditCar";
-    }
-
-    @PostMapping("/edit")
-    public String editCarPost(@ModelAttribute Car car) {
-        carService.update(car);
-        return REDIRECT_CAR_LIST;
-    }
-
-    @GetMapping("/delete/{carId}")
-    public String deleteCar(@PathVariable String carId) {
-        carService.deleteById(carId);
-        return REDIRECT_CAR_LIST;
+        super(carService,
+                "car",              // Entity name
+                "CreateCar",        // Create view
+                "CarList",          // List view
+                "EditCar",          // Edit view
+                "redirect:/car/list", // Redirect URL
+                Car::new);          // Supplier for a new Car instance
     }
 }

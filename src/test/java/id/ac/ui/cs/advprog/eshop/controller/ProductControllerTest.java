@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class ProductControllerTest {
@@ -32,55 +33,55 @@ class ProductControllerTest {
     }
 
     @Test
-    void testCreateProductPage() {
-        String viewName = productController.createProductPage(model);
+    void testCreatePage() {
+        String viewName = productController.createPage(model);
         assertEquals("CreateProduct", viewName);
         verify(model).addAttribute(eq("product"), any(Product.class));
     }
 
     @Test
-    void testCreateProductPost() {
+    void testCreatePost() {
         Product product = new Product();
-        String viewName = productController.createProductPost(product);
+        String viewName = productController.createPost(product);
         assertEquals("redirect:/product/list", viewName);
         verify(productService).create(product);
     }
 
     @Test
-    void testProductListPage() {
+    void testListPage() {
         List<Product> productList = Arrays.asList(new Product(), new Product());
         when(productService.findAll()).thenReturn(productList);
 
-        String viewName = productController.productListPage(model);
+        String viewName = productController.listPage(model);
         assertEquals("ProductList", viewName);
         verify(model).addAttribute("products", productList);
         verify(productService).findAll();
     }
 
     @Test
-    void testEditProductPage() {
+    void testEditPage() {
         String productId = "123";
         Product product = new Product();
         when(productService.findById(productId)).thenReturn(product);
 
-        String viewName = productController.editProductPage(productId, model);
+        String viewName = productController.editPage(productId, model);
         assertEquals("EditProduct", viewName);
         verify(model).addAttribute("product", product);
         verify(productService).findById(productId);
     }
 
     @Test
-    void testEditProductPost() {
+    void testEditPost() {
         Product product = new Product();
-        String viewName = productController.editProductPost(product);
+        String viewName = productController.editPost(product);
         assertEquals("redirect:/product/list", viewName);
         verify(productService).update(product);
     }
 
     @Test
-    void testDeleteProduct() {
+    void testDelete() {
         String productId = "123";
-        String viewName = productController.deleteProduct(productId);
+        String viewName = productController.delete(productId);
         assertEquals("redirect:/product/list", viewName);
         verify(productService).deleteById(productId);
     }

@@ -10,7 +10,10 @@
 
 <div class="container my-2">
   <h2>Car List</h2>
-  <a th:href="@{/car/create}" class="btn btn-primary btn-sm mb-3">Create Car</a>
+  <div class="mb-3">
+    <a th:href="@{/car/create}" class="btn btn-primary btn-sm">Create Car</a>
+    <a th:href="@{/}" class="btn btn-secondary btn-sm ml-2">Back to Homepage</a>
+  </div>
 
   <table class="table table-striped table-responsive-md">
     <thead>
