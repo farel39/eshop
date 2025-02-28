@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class CarControllerTest {
@@ -32,55 +33,55 @@ class CarControllerTest {
     }
 
     @Test
-    void testCreateCarPage() {
-        String viewName = carController.createCarPage(model);
+    void testCreatePage() {
+        String viewName = carController.createPage(model);
         assertEquals("CreateCar", viewName);
         verify(model).addAttribute(eq("car"), any(Car.class));
     }
 
     @Test
-    void testCreateCarPost() {
+    void testCreatePost() {
         Car car = new Car();
-        String viewName = carController.createCarPost(car);
+        String viewName = carController.createPost(car);
         assertEquals("redirect:/car/list", viewName);
         verify(carService).create(car);
     }
 
     @Test
-    void testCarListPage() {
+    void testListPage() {
         List<Car> carList = Arrays.asList(new Car(), new Car());
         when(carService.findAll()).thenReturn(carList);
 
-        String viewName = carController.carListPage(model);
+        String viewName = carController.listPage(model);
         assertEquals("CarList", viewName);
         verify(model).addAttribute("cars", carList);
         verify(carService).findAll();
     }
 
     @Test
-    void testEditCarPage() {
+    void testEditPage() {
         String carId = "123";
         Car car = new Car();
         when(carService.findById(carId)).thenReturn(car);
 
-        String viewName = carController.editCarPage(carId, model);
+        String viewName = carController.editPage(carId, model);
         assertEquals("EditCar", viewName);
         verify(model).addAttribute("car", car);
         verify(carService).findById(carId);
     }
 
     @Test
-    void testEditCarPost() {
+    void testEditPost() {
         Car car = new Car();
-        String viewName = carController.editCarPost(car);
+        String viewName = carController.editPost(car);
         assertEquals("redirect:/car/list", viewName);
         verify(carService).update(car);
     }
 
     @Test
-    void testDeleteCar() {
+    void testDelete() {
         String carId = "123";
-        String viewName = carController.deleteCar(carId);
+        String viewName = carController.delete(carId);
         assertEquals("redirect:/car/list", viewName);
         verify(carService).deleteById(carId);
     }
