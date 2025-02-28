@@ -41,8 +41,8 @@ class ProductControllerTest {
     @Test
     void testCreateProductPost() {
         Product product = new Product();
-        String viewName = productController.createProductPost(product, model);
-        assertEquals("redirect:list", viewName);
+        String viewName = productController.createProductPost(product);
+        assertEquals("redirect:/product/list", viewName);
         verify(productService).create(product);
     }
 
@@ -72,8 +72,8 @@ class ProductControllerTest {
     @Test
     void testEditProductPost() {
         Product product = new Product();
-        String viewName = productController.editProductPost(product, model);
-        assertEquals("redirect:list", viewName);
+        String viewName = productController.editProductPost(product);
+        assertEquals("redirect:/product/list", viewName);
         verify(productService).update(product);
     }
 
