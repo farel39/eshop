@@ -348,8 +348,6 @@ SRP states that every class or module should have only one reason to change. Thi
 
 ---
 
-
-
 ### b. Liskov Substitution Principle (LSP)
 #### Overview
 The Liskov Substitution Principle (LSP) requires that objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program. In other words, every subclass must adhere to the contract defined by its superclass so that substituting the superclass with any subclass does not lead to unexpected behaviors or errors.
@@ -358,15 +356,23 @@ The Liskov Substitution Principle (LSP) requires that objects of a superclass sh
 
 - **Repository Layer:**
     - `AbstractRepository` defines a generic CRUD interface, establishing a clear contract for data operations.
-    - Both `CarRepository` and `ProductRepository` extend `AbstractRepository` but doesn't change the basic CRUD operation (legacy methods), ensuring they can be substituted seamlessly in any context where an `AbstractRepository` is required.
+    - Both `CarRepository` and `ProductRepository` extend `AbstractRepository` but don't change the basic CRUD operations (legacy methods), ensuring they can be substituted seamlessly in any context where an `AbstractRepository` is required.
 
 - **Service Layer:**
     - `AbstractCrudService` offers standard CRUD operations and defines abstract methods that set a precise contract for data handling.
-    - Concrete services (e.g., `CarServiceImpl` and `ProductServiceImpl`) use the standard CRUD operations given by `AbstractCrudService` and just implement the abstract `getRepository()` method, adhering strictly to its contract. This guarantees that any service using `AbstractCrudService` can reliably work with these concrete implementations, in line with the LSP.
+    - Concrete services (e.g., `CarServiceImpl` and `ProductServiceImpl`) use the standard CRUD operations provided by `AbstractCrudService` and simply implement the abstract `getRepository()` method, adhering strictly to its contract. This guarantees that any service using `AbstractCrudService` can reliably work with these concrete implementations, in line with the LSP.
 
 - **Model Layer:**
     - The abstract `Item` class defines common properties (e.g., `id`, `name`, `quantity`), serving as a blueprint for all items in the system.
     - Subclasses (`Car` and `Product`) extend `Item` and implement these properties while preserving the behavior specified by `Item`. This allows objects of `Car` or `Product` to be used interchangeably with `Item`, fully satisfying the LSP.
+
+- **Controller Layer:**
+    - `AbstractCrudController` defines a generic controller with common CRUD endpoints and enforces a strict contract via abstract methods for view names, model attributes, and URL redirections.
+    - Concrete controllers (e.g., `CarController` and `ProductController`) extend `AbstractCrudController` and implement the required abstract methods without altering the expected behavior of CRUD operations. This ensures that these controllers can be substituted wherever a generic CRUD controller is expected, thereby adhering to the LSP.
+
+
+
+---
 
 
 ### c. Open/Closed Principle (OCP)
@@ -388,7 +394,9 @@ OCP states that software entities (classes, modules, functions, etc.) should be 
     - The `Item` class serves as a foundational structure for all entities, establishing a consistent base.
     - Subclasses like `Car` and `Product` extend `Item` and introduce specialized attributes (e.g., `Car` adds a `color` property). This approach lets me extend entity functionality in a modular way without impacting the base model, ensuring that enhancements or changes are isolated and manageable.
 
-
+- **Controller Layer:**
+    - The new `AbstractCrudController` encapsulates common CRUD behavior for controllers, providing a stable and extensible foundation.
+    - Concrete controllers (e.g., `CarController` and `ProductController`) extend `AbstractCrudController` and implement abstract methods for specific behavior (such as view names, model attributes, and URL redirections) without altering the base controller logic. This design allows controllers to be extended with new functionality while keeping the core logic intact.
 
 ---
 
