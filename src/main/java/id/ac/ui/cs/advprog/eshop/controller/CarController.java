@@ -3,54 +3,43 @@ package id.ac.ui.cs.advprog.eshop.controller;
 import id.ac.ui.cs.advprog.eshop.model.Car;
 import id.ac.ui.cs.advprog.eshop.service.CarService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/car")
-public class CarController {
-
-    private static final String REDIRECT_CAR_LIST = "redirect:/car/list";
-    private final CarService carService;
+public class CarController extends AbstractCrudController<Car, String> {
 
     public CarController(CarService carService) {
-        this.carService = carService;
+        super(carService);
     }
 
-    @GetMapping("/create")
-    public String createCarPage(Model model) {
-        model.addAttribute("car", new Car());
+    @Override
+    protected String getEntityName() {
+        return "car";
+    }
+
+    @Override
+    protected String getCreateView() {
         return "CreateCar";
     }
 
-    @PostMapping("/create")
-    public String createCarPost(@ModelAttribute Car car) {
-        carService.create(car);
-        return REDIRECT_CAR_LIST;
-    }
-
-    @GetMapping("/list")
-    public String carListPage(Model model) {
-        model.addAttribute("cars", carService.findAll());
+    @Override
+    protected String getListView() {
         return "CarList";
     }
 
-    @GetMapping("/edit/{carId}")
-    public String editCarPage(@PathVariable String carId, Model model) {
-        Car car = carService.findById(carId);
-        model.addAttribute("car", car);
+    @Override
+    protected String getEditView() {
         return "EditCar";
     }
 
-    @PostMapping("/edit")
-    public String editCarPost(@ModelAttribute Car car) {
-        carService.update(car);
-        return REDIRECT_CAR_LIST;
+    @Override
+    protected String getRedirectListUrl() {
+        return "redirect:/car/list";
     }
 
-    @GetMapping("/delete/{carId}")
-    public String deleteCar(@PathVariable String carId) {
-        carService.deleteById(carId);
-        return REDIRECT_CAR_LIST;
+    @Override
+    protected Car createNewEntity() {
+        return new Car();
     }
 }
