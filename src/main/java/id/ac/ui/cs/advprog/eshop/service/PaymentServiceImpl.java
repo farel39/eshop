@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
 import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
@@ -37,23 +38,32 @@ public class PaymentServiceImpl implements PaymentService {
         if (!PaymentStatus.contains(status)) {
             throw new IllegalArgumentException("Invalid payment status");
         }
-        Payment existing = paymentRepository.findById(payment.getId());
-        if (existing == null) {
-            throw new NoSuchElementException("Payment not found");
-        }
+        // Validate that the payment exists using getPayment().
+        getPayment(payment.getId());
+
+        // Update the status of the associated order if present.
         Order order = paymentRepository.findOrderByPaymentId(payment.getId());
         if (order != null) {
-            if (PaymentStatus.SUCCESS.getValue().equals(status)) {
-                order.setStatus(PaymentStatus.SUCCESS.getValue());
-            } else {
-                order.setStatus("FAILED");
-            }
+            updateOrderStatus(order, status);
         }
-        Payment updatedPayment = new Payment(payment.getId(), payment.getMethod(), payment.getPaymentData(), status);
+
+        Payment updatedPayment = new Payment(
+                payment.getId(),
+                payment.getMethod(),
+                payment.getPaymentData(),
+                status
+        );
         return paymentRepository.save(updatedPayment);
     }
 
+    private void updateOrderStatus(Order order, String status) {
+        if (PaymentStatus.SUCCESS.getValue().equals(status)) {
+            order.setStatus(OrderStatus.SUCCESS.getValue());
+        } else {
 
+            order.setStatus(OrderStatus.FAILED.getValue());
+        }
+    }
 
     @Override
     public Payment getPayment(String paymentId) {
