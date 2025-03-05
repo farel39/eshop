@@ -106,7 +106,7 @@ class PaymentServiceTest {
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue()));
-        assertEquals("Payment not found", exception.getMessage());
+        assertEquals("Payment not found with id: " + payment.getId(), exception.getMessage());
         verify(paymentRepository, times(0)).save(any(Payment.class));
     }
 
