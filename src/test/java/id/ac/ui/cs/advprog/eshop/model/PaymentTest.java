@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
 import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,37 +22,37 @@ class PaymentTest {
     @Test
     void testCreateVoucherPaymentValid() {
         paymentData.put("voucherCode", "ESHOP1234ABC5678"); // Valid: 16 characters, correct prefix, at least 8 digits
-        Payment payment = new Payment("payment-uuid-1", "VOUCHER_CODE", paymentData);
-        assertEquals("SUCCESS", payment.getStatus());
-        assertEquals("VOUCHER_CODE", payment.getMethod());
+        Payment payment = new Payment("payment-uuid-1", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
+        assertEquals(PaymentMethod.VOUCHER_CODE.getValue(), payment.getMethod());
     }
 
     @Test
     void testCreateVoucherPaymentInvalidLength() {
         paymentData.put("voucherCode", "ESHOP1234ABC567"); // 15 characters, invalid
-        Payment payment = new Payment("payment-uuid-2", "VOUCHER_CODE", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
+        Payment payment = new Payment("payment-uuid-2", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     @Test
     void testCreateVoucherPaymentInvalidPrefix() {
         paymentData.put("voucherCode", "ASHOP1234ABC6784"); // Does not start with ESHOP
-        Payment payment = new Payment("payment-uuid-3", "VOUCHER_CODE", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
+        Payment payment = new Payment("payment-uuid-3", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     @Test
     void testCreateVoucherPaymentInsufficientDigits() {
         paymentData.put("voucherCode", "ESHOPABCDEFGHXYZW"); // 16 characters but not enough digits
-        Payment payment = new Payment("payment-uuid-4", "VOUCHER_CODE", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
+        Payment payment = new Payment("payment-uuid-4", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     @Test
     void testCreateVoucherPaymentNullVoucher() {
         paymentData.put("voucherCode", null); // 16 characters but not enough digits
-        Payment payment = new Payment("payment-uuid-4", "VOUCHER_CODE", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
+        Payment payment = new Payment("payment-uuid-4", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     // --- Bank Transfer Sub-feature Tests ---
@@ -60,41 +61,41 @@ class PaymentTest {
     void testCreateBankTransferPaymentValid() {
         paymentData.put("bankName", "Bank ABC");
         paymentData.put("referenceCode", "REF123456");
-        Payment payment = new Payment("payment-uuid-5", "BANK_TRANSFER", paymentData);
-        assertEquals("SUCCESS", payment.getStatus());
-        assertEquals("BANK_TRANSFER", payment.getMethod());
+        Payment payment = new Payment("payment-uuid-5", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
+        assertEquals(PaymentMethod.BANK_TRANSFER.getValue(), payment.getMethod());
     }
 
     @Test
     void testCreateBankTransferPaymentEmptyBankName() {
         paymentData.put("bankName", " ");
         paymentData.put("referenceCode", "REF123456");
-        Payment payment = new Payment("payment-uuid-6", "BANK_TRANSFER", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
+        Payment payment = new Payment("payment-uuid-6", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     @Test
     void testCreateBankTransferPaymentNullBankName() {
         paymentData.put("bankName", null);
         paymentData.put("referenceCode", "REF123456");
-        Payment payment = new Payment("payment-uuid-6", "BANK_TRANSFER", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
+        Payment payment = new Payment("payment-uuid-6", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     @Test
     void testCreateBankTransferPaymentEmptyReferenceCode() {
         paymentData.put("bankName", "Bank ABC");
         paymentData.put("referenceCode", " ");
-        Payment payment = new Payment("payment-uuid-7", "BANK_TRANSFER", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
+        Payment payment = new Payment("payment-uuid-7", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     @Test
     void testCreateBankTransferPaymentNullReferenceCode() {
         paymentData.put("bankName", "Bank ABC");
         paymentData.put("referenceCode", null);
-        Payment payment = new Payment("payment-uuid-7", "BANK_TRANSFER", paymentData);
-        assertEquals("REJECTED", payment.getStatus());
+        Payment payment = new Payment("payment-uuid-7", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
+        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
     // --- General Validation Tests ---
@@ -102,7 +103,7 @@ class PaymentTest {
     @Test
     void testCreatePaymentWithNullPaymentData() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("payment-uuid-8", "VOUCHER_CODE", null);
+            new Payment("payment-uuid-8", PaymentMethod.VOUCHER_CODE.getValue(), null);
         });
     }
 
@@ -110,7 +111,7 @@ class PaymentTest {
     void testCreatePaymentWithEmptyId() {
         paymentData.put("voucherCode", "ESHOP1234ABC5678");
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("", "VOUCHER_CODE", paymentData);
+            new Payment("", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
         });
     }
 
@@ -118,7 +119,7 @@ class PaymentTest {
     void testCreatePaymentWithNullId() {
         paymentData.put("voucherCode", "ESHOP1235ABC5678");
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment(null, "VOUCHER_CODE", paymentData);
+            new Payment(null, PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
         });
     }
 
