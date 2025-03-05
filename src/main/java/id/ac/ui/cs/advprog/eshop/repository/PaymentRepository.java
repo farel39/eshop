@@ -22,7 +22,8 @@ public class PaymentRepository {
      * @return The saved payment.
      */
     public Payment save(Payment payment) {
-        return null;
+        payments.put(payment.getId(), payment);
+        return payment;
     }
 
     /**
@@ -31,7 +32,7 @@ public class PaymentRepository {
      * @return The Payment if found, or null otherwise.
      */
     public Payment findById(String id) {
-        return null;
+        return payments.get(id);
     }
 
     /**
@@ -39,7 +40,7 @@ public class PaymentRepository {
      * @return A list of all Payment objects.
      */
     public List<Payment> findAll() {
-        return null;
+        return new ArrayList<>(payments.values());
     }
 
     /**
@@ -48,7 +49,13 @@ public class PaymentRepository {
      * @return A list of Payment objects that match the given method.
      */
     public List<Payment> findAllByMethod(String method) {
-        return null;
+        List<Payment> result = new ArrayList<>();
+        for (Payment payment : payments.values()) {
+            if (payment.getMethod().equals(method)) {
+                result.add(payment);
+            }
+        }
+        return result;
     }
 
     /**
@@ -57,7 +64,7 @@ public class PaymentRepository {
      * @param order Order to be assigned.
      */
     public void assignOrder(Payment payment, Order order) {
-
+        paymentOrder.put(payment.getId(), order);
     }
 
     /**
@@ -66,6 +73,6 @@ public class PaymentRepository {
      * @return The associated Order, or null if none is assigned.
      */
     public Order findOrderByPaymentId(String paymentId) {
-
+        return paymentOrder.get(paymentId);
     }
 }
