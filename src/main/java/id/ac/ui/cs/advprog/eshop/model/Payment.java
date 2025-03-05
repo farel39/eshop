@@ -23,6 +23,15 @@ public class Payment {
         this.status = evaluatedStatus.getValue();
     }
 
+    public Payment(String id, String method, Map<String, String> paymentData, String status) {
+        validateInput(id, method, paymentData);
+        this.id = id;
+        this.method = method;
+        this.paymentData = paymentData;
+
+        this.status = status;
+    }
+
     private void validateInput(String id, String method, Map<String, String> paymentData) {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("Payment id cannot be empty");
