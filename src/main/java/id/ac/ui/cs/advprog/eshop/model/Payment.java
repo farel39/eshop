@@ -1,77 +1,38 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import lombok.Getter;
 
 import java.util.Map;
 
 @Getter
 public class Payment {
-    private String id;
-    private String method;
-    private String status;
-    private Map<String, String> paymentData;
+    private final String id;
+    private final String method;
+    private final String status;
+    private final Map<String, String> paymentData;
 
     public Payment(String id, String method, Map<String, String> paymentData) {
-        // Validate required fields
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("id cannot be null or empty");
-        }
-        if (method == null || method.trim().isEmpty()) {
-            throw new IllegalArgumentException("method cannot be null or empty");
-        }
-        if (paymentData == null) {
-            throw new IllegalArgumentException("paymentData cannot be null");
-        }
-        // Only allow specific payment methods
-        if (!method.equals("VOUCHER_CODE") && !method.equals("BANK_TRANSFER")) {
-            throw new IllegalArgumentException("Invalid payment method: " + method);
-        }
-
+        validateInput(id, method, paymentData);
         this.id = id;
         this.method = method;
         this.paymentData = paymentData;
-
-        // Validate based on the payment method
-        if (method.equals("VOUCHER_CODE")) {
-            validateVoucherPayment();
-        } else if (method.equals("BANK_TRANSFER")) {
-            validateBankTransferPayment();
-        }
+        // Evaluate the payment status using the evaluator which now accepts a String
+        PaymentStatus evaluatedStatus = PaymentStatusEvaluator.evaluate(method, paymentData);
+        this.status = evaluatedStatus.getValue();
     }
 
-    private void validateVoucherPayment() {
-        String voucherCode = paymentData.get("voucherCode");
-        // Voucher must not be null, exactly 16 characters, start with "ESHOP", and contain at least 8 digits.
-        if (voucherCode == null ||
-                voucherCode.length() != 16 ||
-                !voucherCode.startsWith("ESHOP") ||
-                countDigits(voucherCode) < 8) {
-            this.status = "REJECTED";
-        } else {
-            this.status = "SUCCESS";
+    private void validateInput(String id, String method, Map<String, String> paymentData) {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Payment id cannot be empty");
         }
-    }
-
-    private void validateBankTransferPayment() {
-        String bankName = paymentData.get("bankName");
-        String referenceCode = paymentData.get("referenceCode");
-        // Both bankName and referenceCode must be non-null and non-empty (after trimming)
-        if (bankName == null || bankName.trim().isEmpty() ||
-                referenceCode == null || referenceCode.trim().isEmpty()) {
-            this.status = "REJECTED";
-        } else {
-            this.status = "SUCCESS";
+        if (method == null || method.isEmpty() || !PaymentMethod.contains(method)) {
+            throw new IllegalArgumentException("Invalid payment method");
         }
-    }
-
-    private int countDigits(String input) {
-        int count = 0;
-        for (char ch : input.toCharArray()) {
-            if (Character.isDigit(ch)) {
-                count++;
-            }
+        if (paymentData == null) {
+            throw new IllegalArgumentException("Payment data cannot be null");
         }
-        return count;
     }
 
 
