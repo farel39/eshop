@@ -2,8 +2,11 @@ package id.ac.ui.cs.advprog.eshop.functional;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -63,9 +66,27 @@ class ProductListFunctionalTest extends BaseFunctionalTest {
     private void deleteAllProducts(ChromeDriver driver) {
         driver.get(baseUrl + "/product/list");
 
-        // Find all delete buttons and click them
-        driver.findElements(By.cssSelector("a[href^='/product/delete/']")).forEach(WebElement::click);
+        // Continuously check for and delete products until none remain.
+        List<WebElement> deleteButtons = driver.findElements(By.cssSelector("a[href^='/product/delete/']"));
+        while (!deleteButtons.isEmpty()) {
+            try {
+                // Click the first available delete button.
+                deleteButtons.get(0).click();
+
+                // Optionally wait here if your page needs time to update.
+                // For example, you could use Thread.sleep(500) or an explicit wait.
+
+                // Refresh the page and re-fetch the delete buttons.
+                driver.get(baseUrl + "/product/list");
+                deleteButtons = driver.findElements(By.cssSelector("a[href^='/product/delete/']"));
+            } catch (StaleElementReferenceException e) {
+                // If a stale element is encountered, re-fetch the delete buttons.
+                deleteButtons = driver.findElements(By.cssSelector("a[href^='/product/delete/']"));
+            }
+        }
     }
+
+
 
 
     private void deleteProduct(ChromeDriver driver, String productName) {
