@@ -55,7 +55,7 @@ class HomePageFunctionalTest {
                 .getText();
 
         // Verify
-        assertEquals("Welcome", welcomeMessage);
+        assertEquals("Welcome to ADV Shop", welcomeMessage);
     }
 
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Payment</title>
+    <script type="text/javascript">
+        function showPaymentFields() {
+            var paymentMethod = document.querySelector('input[name="method"]:checked').value;
+            if (paymentMethod === 'VOUCHER_CODE') {
+                document.getElementById('voucherFields').style.display = 'block';
+                document.getElementById('bankFields').style.display = 'none';
+            } else if (paymentMethod === 'BANK_TRANSFER') {
+                document.getElementById('voucherFields').style.display = 'none';
+                document.getElementById('bankFields').style.display = 'block';
+            }
+        }
+
+        window.onload = function() {
+            showPaymentFields();
+        };
+    </script>
+</head>
+<body>
+<h1>Pay for Order</h1>
+<div>
+    <p>Order ID: <span th:text="${order.id}"></span></p>
+    <p>Order Time: <span th:text="${order.orderTime}"></span></p>
+    <p>Status: <span th:text="${order.status}"></span></p>
+    <p>Author: <span th:text="${order.author}"></span></p>
+</div>
+
+<form th:action="@{/order/pay/{orderId}(orderId=${order.id})}" method="post">
+    <h2>Select Payment Method:</h2>
+    <label>
+        <input type="radio" name="method" value="VOUCHER_CODE" onclick="showPaymentFields()" checked/>
+        Voucher Code
+    </label>
+    <label>
+        <input type="radio" name="method" value="BANK_TRANSFER" onclick="showPaymentFields()"/>
+        Bank Transfer
+    </label>
+
+    <div id="voucherFields" style="margin-top: 10px;">
+        <h3>Voucher Payment</h3>
+        <label for="voucherCode">Voucher Code:</label>
+        <input type="text" id="voucherCode" name="voucherCode" placeholder="Enter voucher code"/>
+    </div>
+
+    <div id="bankFields" style="display: none; margin-top: 10px;">
+        <h3>Bank Transfer Payment</h3>
+        <label for="bankName">Bank Name:</label>
+        <input type="text" id="bankName" name="bankName" placeholder="Enter bank name"/><br/><br/>
+
+        <label for="referenceCode">Reference Code:</label>
+        <input type="text" id="referenceCode" name="referenceCode" placeholder="Enter reference code"/>
+    </div>
+
+    <br/>
+    <button type="submit">Submit Payment</button>
+</form>
+</body>
+</html>
