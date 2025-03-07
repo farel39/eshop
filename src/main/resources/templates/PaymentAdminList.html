@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>All Payments (Admin)</title>
+</head>
+<body>
+<h1>All Payments (Admin)</h1>
+<div th:if="${payments != null}">
+  <ul>
+    <li th:each="payment : ${payments}">
+      Payment ID: <span th:text="${payment.id}"></span>,
+      Method: <span th:text="${payment.method}"></span>,
+      Status: <span th:text="${payment.status}"></span>
+      <a th:href="@{/payment/admin/detail/{paymentId}(paymentId=${payment.id})}">View Details</a>
+    </li>
+  </ul>
+</div>
+<div th:if="${payments == null}">
+  <p>No payments found.</p>
+</div>
+</body>
+</html>

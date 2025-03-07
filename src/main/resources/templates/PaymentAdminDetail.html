@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Admin Detail</title>
+</head>
+<body>
+<h1>Payment Admin Detail</h1>
+<div th:if="${payment != null}">
+    <p>Payment ID: <span th:text="${payment.id}"></span></p>
+    <p>Method: <span th:text="${payment.method}"></span></p>
+    <p>Status: <span th:text="${payment.status}"></span></p>
+    <h3>Payment Data:</h3>
+    <ul>
+        <li th:each="entry : ${payment.paymentData.entrySet()}">
+            <span th:text="${entry.key}"></span>: <span th:text="${entry.value}"></span>
+        </li>
+    </ul>
+
+    <h2>Update Payment Status</h2>
+    <form th:action="@{/payment/admin/set-status/{paymentId}(paymentId=${payment.id})}" method="post">
+        <label for="status">Set Status:</label>
+        <select id="status" name="status" required>
+            <option value="SUCCESS">Success</option>
+            <option value="REJECTED">Reject</option>
+        </select>
+        <button type="submit">Update Status</button>
+    </form>
+</div>
+<div th:if="${payment == null}">
+    <p>Payment not found.</p>
+</div>
+</body>
+</html>
