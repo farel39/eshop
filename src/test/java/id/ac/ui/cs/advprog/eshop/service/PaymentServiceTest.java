@@ -104,12 +104,16 @@ class PaymentServiceTest {
         // Simulate scenario where repository returns null for the payment lookup
         when(paymentRepository.findById(payment.getId())).thenReturn(null);
 
+        // Pre-compute the status value.
+        String statusValue = PaymentStatus.SUCCESS.getValue();
+
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
-                () -> paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue()));
+                () -> paymentService.setStatus(payment, statusValue));
 
         assertEquals("Payment not found with id: " + payment.getId(), exception.getMessage());
         verify(paymentRepository, never()).save(any());
     }
+
 
 
     @Test

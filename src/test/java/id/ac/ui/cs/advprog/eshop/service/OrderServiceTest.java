@@ -97,22 +97,33 @@ class OrderServiceTest {
         Order order = orders.get(1);
         doReturn(order).when(orderRepository).findById(order.getId());
 
+        // Pre-compute the order ID and invalid status value outside the lambda.
+        String orderId = order.getId();
+        String invalidStatus = "MEOW";
+
+        // The lambda now only invokes the updateStatus method.
         assertThrows(IllegalArgumentException.class,
-                () -> orderService.updateStatus(order.getId(), "MEOW"));
+                () -> orderService.updateStatus(orderId, invalidStatus));
 
         verify(orderRepository, never()).save(any());
     }
+
 
 
     @Test
     void testUpdateStatusInvalidOrderId() {
         doReturn(null).when(orderRepository).findById("zczc");
 
+        // Pre-compute the status value outside the lambda.
+        String statusValue = OrderStatus.SUCCESS.getValue();
+
+        // The lambda now only calls orderService.updateStatus.
         assertThrows(NoSuchElementException.class,
-                () -> orderService.updateStatus("zczc", OrderStatus.SUCCESS.getValue()));
+                () -> orderService.updateStatus("zczc", statusValue));
 
         verify(orderRepository, never()).save(any());
     }
+
 
 
     @Test

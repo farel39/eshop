@@ -41,7 +41,6 @@ class PaymentTest {
             "ESHOPABCDEFGHXYZW" // Insufficient digits
     })
     void testCreateVoucherPaymentInvalidVoucher(String voucherCode) {
-        Map<String, String> paymentData = new HashMap<>();
         paymentData.put("voucherCode", voucherCode);
         Payment payment = new Payment("payment-uuid-2", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
@@ -80,17 +79,23 @@ class PaymentTest {
 
     @Test
     void testCreatePaymentWithNullPaymentData() {
+        // Pre-compute any values that might throw or clutter the lambda.
+        String voucherCodeValue = PaymentMethod.VOUCHER_CODE.getValue();
+
+        // Now the lambda contains only the constructor invocation.
         assertThrows(IllegalArgumentException.class, () ->
-                new Payment("payment-uuid-8", PaymentMethod.VOUCHER_CODE.getValue(), null)
+                new Payment("payment-uuid-8", voucherCodeValue, null)
         );
     }
+
 
 
     @Test
     void testCreatePaymentWithEmptyId() {
         paymentData.put("voucherCode", "ESHOP1234ABC5678");
+        String voucherCodeValue = PaymentMethod.VOUCHER_CODE.getValue();
         assertThrows(IllegalArgumentException.class, () ->
-                new Payment("", PaymentMethod.VOUCHER_CODE.getValue(), paymentData)
+                new Payment("", voucherCodeValue, paymentData)
         );
     }
 
@@ -98,17 +103,18 @@ class PaymentTest {
     @Test
     void testCreatePaymentWithNullId() {
         paymentData.put("voucherCode", "ESHOP1235ABC5678");
+        String voucherCodeValue = PaymentMethod.VOUCHER_CODE.getValue();
         assertThrows(IllegalArgumentException.class, () ->
-                new Payment(null, PaymentMethod.VOUCHER_CODE.getValue(), paymentData)
+                new Payment(null, voucherCodeValue, paymentData)
         );
     }
+
 
 
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"", "INVALID_METHOD"})
     void testCreatePaymentWithInvalidMethod(String paymentMethod) {
-        Map<String, String> paymentData = new HashMap<>();
         paymentData.put("voucherCode", "ESHOP1234ABC5678");
 
         assertThrows(IllegalArgumentException.class, () -> {
