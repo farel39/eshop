@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Created</title>
+</head>
+<body>
+<h1>Order Created Successfully</h1>
+<div>
+    <p><strong>Order ID:</strong> <span th:text="${order.id}">Order ID</span></p>
+    <p><strong>Author:</strong> <span th:text="${order.author}">Author</span></p>
+    <p>
+        <strong>Order Time:</strong>
+        <span th:text="${#dates.format(order.orderTime, 'dd-MM-yyyy HH:mm')}">Order Time</span>
+    </p>
+    <p><strong>Status:</strong> <span th:text="${order.status}">Status</span></p>
+</div>
+
+<h2>Products in the Order:</h2>
+<ul>
+    <li th:each="product : ${order.products}">
+        <span th:text="${product.name}">Product Name</span>
+    </li>
+</ul>
+
+<!-- Link to pay for the order -->
+<a th:href="@{/order/pay/{orderId}(orderId=${order.id})}">Pay for Order</a>
+<br/><br/>
+<a th:href="@{/order/create}">Create another order</a>
+</body>
+</html>

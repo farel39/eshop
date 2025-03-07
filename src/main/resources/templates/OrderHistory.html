@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+</head>
+<body>
+<h1>Order History</h1>
+<div th:if="${orders != null}">
+    <ul>
+        <li th:each="order : ${orders}">
+            <p>
+                Order ID: <span th:text="${order.id}"></span>,
+                Order Time: <span th:text="${order.orderTime}"></span>,
+                Status: <span th:text="${order.status}"></span>,
+                Author: <span th:text="${order.author}"></span>
+            </p>
+            <p><strong>Products:</strong></p>
+            <ul>
+                <li th:each="product : ${order.products}">
+                    <span th:text="${product.name}"></span>
+                </li>
+            </ul>
+            <!-- Button to pay for the order -->
+            <form th:action="@{/order/pay/{orderId}(orderId=${order.id})}" method="get">
+                <button type="submit">Pay for Order</button>
+            </form>
+        </li>
+    </ul>
+</div>
+<div th:if="${orders == null}">
+    <p>No orders found.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Order History Form</title>
+</head>
+<body>
+<h1>View Order History</h1>
+<form action="#" th:action="@{/order/history}" method="post">
+  <label for="name">Enter your name:</label>
+  <input type="text" id="name" name="name" required/><br/><br/>
+  <button type="submit">View Orders</button>
+</form>
+</body>
+</html>
