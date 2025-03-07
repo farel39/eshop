@@ -2,6 +2,7 @@
 - [Module 1 Reflection](#module-1)
 - [Module 2 Reflection](#module-2)
 - [Module 3 Reflection](#module-3)
+- [Module 4 Reflection](#module-4)
 
 # Module 1
 ## Reflection 1
@@ -557,9 +558,76 @@ When I don't apply SOLID principles, my project faces several challenges. Below 
       If my `CarController` directly depends on a specific implementation like `CarServiceImpl` instead of a more abstract `CarService` interface, any change in the service's implementation could require corresponding changes in the controller. This not only complicates unit testing but also reduces flexibility for future enhancements.
 
 
+# Module 4
 
+## Reflection 1
 
+1. Reflect based on Percival (2017) proposed self-reflective questions (in “Principles and Best Practice of Testing” submodule, chapter “Evaluating Your Testing Objectives”), whether this TDD flow is useful enough for you or not. If not, explain things that you need to do next time you make more tests.
 
+   Yes, i think TDD it's definitely useful for me. I appreciate how the TDD flow breaks everything down into clear, manageable steps, which really helps in understanding exactly what needs to be done. The process of writing tests first, seeing them fail, and then gradually making them pass ensures that I'm catching issues early on. I also like that it forces me to consider both happy and unhappy paths, which makes the code more robust overall. Plus, the iterative cycle makes it easier to adjust and refactor as needed without feeling overwhelmed.
+
+2. You have created unit tests in Tutorial. Now reflect whether your tests have successfully followed F.I.R.S.T. principle or not. If not, explain things that you need to do the next time you create more tests.
+
+   I think my tests mostly follow the F.I.R.S.T. principles, but there's definitely room for improvement. They run quickly and are self-validating with clear assertions, which is great. However, I noticed that sometimes tests may share state or have dependencies that could be better isolated, so I need to work on making them fully independent and repeatable. Next time, I'll also ensure that I write tests as early as possible in the development cycle to make them even more timely, and I'll pay closer attention to isolating external dependencies to keep tests truly atomic. Overall, it's a good start, but refining these aspects will help make my tests even more robust and maintainable.
+
+## Reflection 2: Refactored Persons Github - Ragnall16 (https://github.com/Ragnall16/eshop/tree/refactor/2306152424) 
+
+### 1. Evaluation of Partner’s Code
+
+#### Functionality vs. Maintainability
+- **Functionality:** The code achieves its intended purpose.
+- **Maintainability:** While the implementation works, several areas could be refactored for clarity and easier future modifications. Improving code clarity now will help avoid complications later.
+
+#### Readability and Intentionality
+- The extensive use of verbose control structures (such as multiple if-then-else statements) detracts from overall readability.
+- Redundant code elements—including unused variables, empty statements, and commented-out blocks—further obscure the intended logic.
+
+#### Key Areas Lacking
+- **Simplicity in Conditionals:**
+    - In files like `Payment.java`, repeated if-then-else blocks could be replaced with single return statements, resulting in cleaner, more concise code.
+- **Dependency Injection:**
+    - Classes such as `OrderServiceImpl.java` and `PaymentServiceImpl.java` use field injection instead of constructor injection. Constructor injection makes dependencies explicit and improves testability.
+- **Clutter from Unused Code:**
+    - The presence of unused imports, variables, and entire blocks of commented-out code clutters the codebase and can confuse future developers.
+- **Inconsistent Naming and Variable Hiding:**
+    - Issues like variables (e.g., `paymentData`) hiding class-level fields can lead to subtle bugs. Consistent and clear naming conventions are essential.
+
+### 2. Contributions to the Code
+
+- **Simplifying Conditionals:**
+    - Refactored if-then-else statements in `Payment.java` into single return statements for enhanced clarity.
+- **Improving Dependency Injection:**
+    - Replaced field injections with constructor injections in both `OrderServiceImpl.java` and `PaymentServiceImpl.java` to clearly define dependencies and promote immutability.
+- **Removing Redundant Code:**
+    - Cleaned up the codebase by eliminating unused imports, variables, and commented-out lines across various files.
+- **Refactoring Test Code:**
+    - Consolidated redundant lambda expressions and merged similar test cases into parameterized tests, reducing duplication and simplifying maintenance.
+
+### 3. Identified Code Smells
+
+- **Clumsy Conditionals:**
+    - Multiple if-then-else statements that could be simplified into more straightforward return statements.
+- **Field Injection:**
+    - Using field injection in service classes diminishes the clarity of dependency requirements and can hinder testing.
+- **Dead Code:**
+    - Presence of unused imports, variables, and commented-out code that serves no purpose.
+- **Empty Statements:**
+    - Superfluous empty statements that add unnecessary noise.
+- **Variable Hiding:**
+    - Variables, such as `paymentData`, that inadvertently shadow class-level fields, potentially leading to confusion or errors.
+
+### 4. Refactoring Steps Suggested and Executed
+
+- **Simplified Conditionals:**
+    - Replaced verbose if-then-else blocks in `Payment.java` with direct return statements.
+- **Constructor Injection:**
+    - Switched from field injection to constructor injection in service classes to ensure dependencies are explicitly declared.
+- **Code Cleanup:**
+    - Removed unused imports, variables, and commented-out code to streamline the codebase.
+- **Test Refactoring:**
+    - Merged repetitive test cases into parameterized tests and refactored lambda expressions to improve exception handling.
+- **Renaming for Clarity:**
+    - Renamed variables that were shadowing class-level fields to avoid ambiguity and potential bugs.
 
 
 
