@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
-public class PayOrderFunctionalTest extends BaseFunctionalTest {
+class PayOrderFunctionalTest extends BaseFunctionalTest {
 
     @Autowired
     private OrderService orderService;
@@ -45,7 +45,7 @@ public class PayOrderFunctionalTest extends BaseFunctionalTest {
      * Test that the payment page (GET /order/pay/{orderId}) displays the order details correctly.
      */
     @Test
-    public void testShowPaymentPage(ChromeDriver driver) {
+    void testShowPaymentPage(ChromeDriver driver) {
         Order order = createTestOrder("TestUser");
         driver.get(baseUrl + "/order/pay/" + order.getId());
 
@@ -62,7 +62,7 @@ public class PayOrderFunctionalTest extends BaseFunctionalTest {
      * Test submitting the payment form using the Voucher Code payment method.
      */
     @Test
-    public void testPayOrderUsingVoucher(ChromeDriver driver) {
+    void testPayOrderUsingVoucher(ChromeDriver driver) {
         Order order = createTestOrder("TestUserVoucher");
         driver.get(baseUrl + "/order/pay/" + order.getId());
 
@@ -85,7 +85,7 @@ public class PayOrderFunctionalTest extends BaseFunctionalTest {
      * Test submitting the payment form using the Bank Transfer payment method.
      */
     @Test
-    public void testPayOrderUsingBankTransfer(ChromeDriver driver) {
+    void testPayOrderUsingBankTransfer(ChromeDriver driver) {
         Order order = createTestOrder("TestUserBank");
         driver.get(baseUrl + "/order/pay/" + order.getId());
 

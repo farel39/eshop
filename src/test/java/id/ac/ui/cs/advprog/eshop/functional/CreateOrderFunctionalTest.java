@@ -13,7 +13,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
-public class CreateOrderFunctionalTest extends BaseFunctionalTest {
+class CreateOrderFunctionalTest extends BaseFunctionalTest {
 
     // Helper method to create a product
     private void createProduct(ChromeDriver driver) {

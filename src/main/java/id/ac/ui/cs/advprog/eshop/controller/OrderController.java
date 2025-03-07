@@ -20,6 +20,10 @@ import java.util.UUID;
 @RequestMapping("/order")
 public class OrderController {
 
+    // Define constants to avoid duplicating literal strings.
+    private static final String ATTRIBUTE_PRODUCTS = "products";
+    private static final String VIEW_CREATE_ORDER = "CreateOrder";
+
     private final OrderService orderService;
     private final PaymentService paymentService;
     private final ProductService productService;
@@ -33,16 +37,16 @@ public class OrderController {
         this.productService = productService;
     }
 
-    // GET /order/create
+
     // Displays the order creation form along with the list of available products.
     @GetMapping("/create")
     public String showCreateOrderForm(Model model) {
         List<Product> products = productService.findAll();
-        model.addAttribute("products", products);
-        return "CreateOrder";
+        model.addAttribute(ATTRIBUTE_PRODUCTS, products);
+        return VIEW_CREATE_ORDER;
     }
 
-    // POST /order/create
+
     // Processes the creation of a new order based on the selected products.
     @PostMapping("/create")
     public String createOrder(@RequestParam("author") String author,
@@ -51,8 +55,8 @@ public class OrderController {
         if (productIds == null || productIds.isEmpty()) {
             model.addAttribute("error", "Please select at least one product.");
             // Repopulate the products for the view
-            model.addAttribute("products", productService.findAll());
-            return "CreateOrder";
+            model.addAttribute(ATTRIBUTE_PRODUCTS, productService.findAll());
+            return VIEW_CREATE_ORDER;
         }
 
         List<Product> selectedProducts = new ArrayList<>();
@@ -65,8 +69,8 @@ public class OrderController {
 
         if (selectedProducts.isEmpty()) {
             model.addAttribute("error", "Selected products are invalid.");
-            model.addAttribute("products", productService.findAll());
-            return "CreateOrder";
+            model.addAttribute(ATTRIBUTE_PRODUCTS, productService.findAll());
+            return VIEW_CREATE_ORDER;
         }
 
         // Create a new order with a generated id and the current timestamp.
@@ -76,13 +80,13 @@ public class OrderController {
         return "OrderCreated";
     }
 
-    // GET /order/history
+
     @GetMapping("/history")
     public String showOrderHistoryForm() {
         return "OrderHistoryForm";
     }
 
-    // POST /order/history
+
     @PostMapping("/history")
     public String showOrderHistory(@RequestParam("name") String author, Model model) {
         List<Order> orders = orderService.findAllByAuthor(author);
@@ -90,7 +94,7 @@ public class OrderController {
         return "OrderHistory";
     }
 
-    // GET /order/pay/{orderId}
+
     @GetMapping("/pay/{orderId}")
     public String showPaymentOrderPage(@PathVariable("orderId") String orderId, Model model) {
         Order order = orderService.findById(orderId);
@@ -98,7 +102,7 @@ public class OrderController {
         return "OrderPay";
     }
 
-    // POST /order/pay/{orderId}
+
     @PostMapping("/pay/{orderId}")
     public String payOrder(@PathVariable("orderId") String orderId,
                            @RequestParam("method") String method,

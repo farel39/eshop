@@ -4,13 +4,16 @@ import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import java.util.Map;
 
 public class PaymentStatusEvaluator {
+    private PaymentStatusEvaluator() {
+        // Private constructor to prevent instantiation
+    }
+
     public static PaymentStatus evaluate(String method, Map<String, String> paymentData) {
         return switch (method) {
             case "VOUCHER_CODE" -> evaluateVoucher(paymentData.get("voucherCode"));
             case "BANK_TRANSFER" -> evaluateBankTransfer(paymentData.get("bankName"), paymentData.get("referenceCode"));
             default -> PaymentStatus.REJECTED;
         };
-
     }
 
     private static PaymentStatus evaluateVoucher(String voucher) {

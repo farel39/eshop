@@ -1,7 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.controller;
 
 import id.ac.ui.cs.advprog.eshop.model.Payment;
-import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.service.PaymentService;
 import id.ac.ui.cs.advprog.eshop.service.OrderService;
@@ -16,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PaymentControllerTest {
+class PaymentControllerTest {
 
     private MockMvc mockMvc;
 
@@ -46,7 +45,7 @@ public class PaymentControllerTest {
 
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         // Initialize MockMvc using standalone setup.
         mockMvc = MockMvcBuilders.standaloneSetup(paymentController).build();
 
@@ -66,14 +65,14 @@ public class PaymentControllerTest {
     }
 
     @Test
-    public void testShowPaymentDetailForm() throws Exception {
+    void testShowPaymentDetailForm() throws Exception {
         mockMvc.perform(get("/payment/detail"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("PaymentDetailForm"));
     }
 
     @Test
-    public void testShowPaymentDetail() throws Exception {
+    void testShowPaymentDetail() throws Exception {
         Mockito.when(paymentService.getPayment("1")).thenReturn(paymentDetail);
 
         mockMvc.perform(get("/payment/detail/1"))
@@ -83,7 +82,7 @@ public class PaymentControllerTest {
     }
 
     @Test
-    public void testShowAllPayments() throws Exception {
+    void testShowAllPayments() throws Exception {
         // Create a second payment for variety.
         Payment anotherPayment = new Payment("2", "VOUCHER_CODE", Map.of("voucherCode", "DUMMY_CODE2"));
         List<Payment> payments = Arrays.asList(paymentDetail, anotherPayment);
@@ -97,7 +96,7 @@ public class PaymentControllerTest {
     }
 
     @Test
-    public void testShowPaymentAdminDetail() throws Exception {
+    void testShowPaymentAdminDetail() throws Exception {
         Mockito.when(paymentService.getPayment("1")).thenReturn(paymentDetail);
 
         mockMvc.perform(get("/payment/admin/detail/1"))
@@ -107,9 +106,9 @@ public class PaymentControllerTest {
     }
 
     @Test
-    public void testSetPaymentStatus() throws Exception {
+    void testSetPaymentStatus() throws Exception {
         Mockito.when(paymentService.getPayment("1")).thenReturn(paymentDetail);
-        Mockito.when(paymentService.setStatus(eq(paymentDetail), eq("accepted"))).thenReturn(acceptedPayment);
+        Mockito.when(paymentService.setStatus(paymentDetail, "accepted")).thenReturn(acceptedPayment);
 
         mockMvc.perform(post("/payment/admin/set-status/1")
                         .param("status", "accepted"))

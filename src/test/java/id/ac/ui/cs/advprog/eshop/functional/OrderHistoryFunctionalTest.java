@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
-public class OrderHistoryFunctionalTest extends BaseFunctionalTest {
+class OrderHistoryFunctionalTest extends BaseFunctionalTest {
 
     @Autowired
     private OrderService orderService;
@@ -60,7 +60,7 @@ public class OrderHistoryFunctionalTest extends BaseFunctionalTest {
      * Test that the Order History Form page is displayed.
      */
     @Test
-    public void testGetOrderHistoryForm(ChromeDriver driver) {
+    void testGetOrderHistoryForm(ChromeDriver driver) {
         // Navigate to the Order History Form page.
         driver.get(baseUrl + "/order/history");
 
@@ -74,7 +74,7 @@ public class OrderHistoryFunctionalTest extends BaseFunctionalTest {
      * Test that submitting the Order History Form shows orders for the given author.
      */
     @Test
-    public void testShowOrderHistory(ChromeDriver driver) {
+    void testShowOrderHistory(ChromeDriver driver) {
         String author = "TestAuthorOrderHistory";
 
         // Create a test order for this author using the service layer.

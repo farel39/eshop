@@ -18,10 +18,10 @@ class PaymentStatusEvaluatorTest {
 
 
     @Test
-    public void testEvaluateInvalidPaymentMethod() {
-        PaymentStatusEvaluator evaluator = new PaymentStatusEvaluator();
+    void testEvaluateInvalidPaymentMethod() {
+
         // Act: call evaluate with an unsupported method
-        PaymentStatus result = evaluator.evaluate("CREDIT_CARD", paymentData);
+        PaymentStatus result = PaymentStatusEvaluator.evaluate("CREDIT_CARD", paymentData);
 
         // Assert: verify that the default branch returns REJECTED
         assertEquals(PaymentStatus.REJECTED, result, "Expected REJECTED for an unsupported payment method");

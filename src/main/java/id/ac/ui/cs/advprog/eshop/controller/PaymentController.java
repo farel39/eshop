@@ -13,6 +13,9 @@ import java.util.List;
 @RequestMapping("/payment")
 public class PaymentController {
 
+    // Define a constant for the attribute key "payment"
+    private static final String PAYMENT_ATTRIBUTE = "payment";
+
     private final PaymentService paymentService;
 
     @Autowired
@@ -20,23 +23,20 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    // GET /payment/detail
     // Displays a form where a user can input a payment ID to lookup its details.
     @GetMapping("/detail")
     public String showPaymentDetailForm() {
         return "PaymentDetailForm";
     }
 
-    // GET /payment/detail/{paymentId}
     // Displays the details of a specific payment.
     @GetMapping("/detail/{paymentId}")
     public String showPaymentDetail(@PathVariable("paymentId") String paymentId, Model model) {
         Payment payment = paymentService.getPayment(paymentId);
-        model.addAttribute("payment", payment);
+        model.addAttribute(PAYMENT_ATTRIBUTE, payment);
         return "PaymentDetail";
     }
 
-    // GET /payment/admin/list
     // Displays a list of all payments (admin view).
     @GetMapping("/admin/list")
     public String showAllPayments(Model model) {
@@ -45,16 +45,14 @@ public class PaymentController {
         return "PaymentAdminList";
     }
 
-    // GET /payment/admin/detail/{paymentId}
     // Displays details of a specific payment along with options to reject or accept it (admin view).
     @GetMapping("/admin/detail/{paymentId}")
     public String showPaymentAdminDetail(@PathVariable("paymentId") String paymentId, Model model) {
         Payment payment = paymentService.getPayment(paymentId);
-        model.addAttribute("payment", payment);
+        model.addAttribute(PAYMENT_ATTRIBUTE, payment);
         return "PaymentAdminDetail";
     }
 
-    // POST /payment/admin/set-status/{paymentId}
     // Updates the status of a specific payment based on the provided status (admin view).
     @PostMapping("/admin/set-status/{paymentId}")
     public String setPaymentStatus(@PathVariable("paymentId") String paymentId,
@@ -62,7 +60,7 @@ public class PaymentController {
                                    Model model) {
         Payment payment = paymentService.getPayment(paymentId);
         Payment updatedPayment = paymentService.setStatus(payment, status);
-        model.addAttribute("payment", updatedPayment);
+        model.addAttribute(PAYMENT_ATTRIBUTE, updatedPayment);
         return "PaymentAdminDetail";
     }
 }

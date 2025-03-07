@@ -100,8 +100,9 @@ class OrderServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> orderService.updateStatus(order.getId(), "MEOW"));
 
-        verify(orderRepository, times(0)).save(any(Order.class));
+        verify(orderRepository, never()).save(any());
     }
+
 
     @Test
     void testUpdateStatusInvalidOrderId() {
@@ -110,8 +111,9 @@ class OrderServiceTest {
         assertThrows(NoSuchElementException.class,
                 () -> orderService.updateStatus("zczc", OrderStatus.SUCCESS.getValue()));
 
-        verify(orderRepository, times(0)).save(any(Order.class));
+        verify(orderRepository, never()).save(any());
     }
+
 
     @Test
     void testFindByIdIfIdFound() {

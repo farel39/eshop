@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
-public class PaymentFunctionalTest extends BaseFunctionalTest {
+class PaymentFunctionalTest extends BaseFunctionalTest {
 
     @Autowired
     private PaymentService paymentService;
@@ -64,7 +64,7 @@ public class PaymentFunctionalTest extends BaseFunctionalTest {
      * Test GET /payment/detail displays the payment detail form.
      */
     @Test
-    public void testPaymentDetailForm(ChromeDriver driver) {
+    void testPaymentDetailForm(ChromeDriver driver) {
         driver.get(baseUrl + "/payment/detail");
         // The page header should be "Payment Detail" according to the template.
         WebElement header = driver.findElement(By.tagName("h1"));
@@ -75,7 +75,7 @@ public class PaymentFunctionalTest extends BaseFunctionalTest {
      * Test GET /payment/detail/[paymentId] displays payment details.
      */
     @Test
-    public void testPaymentDetailById(ChromeDriver driver) {
+    void testPaymentDetailById(ChromeDriver driver) {
         Payment payment = createTestPayment("TestUser", 100.0);
 
         driver.get(baseUrl + "/payment/detail/" + payment.getId());
@@ -96,7 +96,7 @@ public class PaymentFunctionalTest extends BaseFunctionalTest {
      * Test GET /payment/admin/list displays all payments.
      */
     @Test
-    public void testPaymentAdminList(ChromeDriver driver) {
+    void testPaymentAdminList(ChromeDriver driver) {
         Payment payment = createTestPayment("AdminUser", 200.0);
 
         driver.get(baseUrl + "/payment/admin/list");
@@ -115,7 +115,7 @@ public class PaymentFunctionalTest extends BaseFunctionalTest {
      * for updating a payment status.
      */
     @Test
-    public void testPaymentAdminDetailAndSetStatus(ChromeDriver driver) {
+    void testPaymentAdminDetailAndSetStatus(ChromeDriver driver) {
         // Create a test payment with an initial status.
         Payment payment = createTestPayment("AdminTest", 300.0);
 

@@ -4,10 +4,17 @@ import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
 import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 class PaymentTest {
     private Map<String, String> paymentData;
@@ -27,31 +34,16 @@ class PaymentTest {
         assertEquals(PaymentMethod.VOUCHER_CODE.getValue(), payment.getMethod());
     }
 
-    @Test
-    void testCreateVoucherPaymentInvalidLength() {
-        paymentData.put("voucherCode", "ESHOP1234ABC567"); // 15 characters, invalid
+    @ParameterizedTest(name = "{index} => voucherCode={0}")
+    @NullSource
+    @ValueSource(strings = { "ESHOP1234ABC567",  // Invalid length (15 characters)
+            "ASHOP1234ABC6784", // Invalid prefix (does not start with ESHOP)
+            "ESHOPABCDEFGHXYZW" // Insufficient digits
+    })
+    void testCreateVoucherPaymentInvalidVoucher(String voucherCode) {
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("voucherCode", voucherCode);
         Payment payment = new Payment("payment-uuid-2", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
-        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
-    }
-
-    @Test
-    void testCreateVoucherPaymentInvalidPrefix() {
-        paymentData.put("voucherCode", "ASHOP1234ABC6784"); // Does not start with ESHOP
-        Payment payment = new Payment("payment-uuid-3", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
-        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
-    }
-
-    @Test
-    void testCreateVoucherPaymentInsufficientDigits() {
-        paymentData.put("voucherCode", "ESHOPABCDEFGHXYZW"); // 16 characters but not enough digits
-        Payment payment = new Payment("payment-uuid-4", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
-        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
-    }
-
-    @Test
-    void testCreateVoucherPaymentNullVoucher() {
-        paymentData.put("voucherCode", null); // 16 characters but not enough digits
-        Payment payment = new Payment("payment-uuid-4", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
@@ -66,85 +58,63 @@ class PaymentTest {
         assertEquals(PaymentMethod.BANK_TRANSFER.getValue(), payment.getMethod());
     }
 
-    @Test
-    void testCreateBankTransferPaymentEmptyBankName() {
-        paymentData.put("bankName", " ");
-        paymentData.put("referenceCode", "REF123456");
-        Payment payment = new Payment("payment-uuid-6", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
+    @ParameterizedTest
+    @MethodSource("provideInvalidBankTransferPaymentData")
+    void testCreateBankTransferPaymentInvalidData(String bankName, String referenceCode) {
+        paymentData.put("bankName", bankName);
+        paymentData.put("referenceCode", referenceCode);
+        Payment payment = new Payment("payment-uuid", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
     }
 
-    @Test
-    void testCreateBankTransferPaymentNullBankName() {
-        paymentData.put("bankName", null);
-        paymentData.put("referenceCode", "REF123456");
-        Payment payment = new Payment("payment-uuid-6", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
-        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
-    }
-
-    @Test
-    void testCreateBankTransferPaymentEmptyReferenceCode() {
-        paymentData.put("bankName", "Bank ABC");
-        paymentData.put("referenceCode", " ");
-        Payment payment = new Payment("payment-uuid-7", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
-        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
-    }
-
-    @Test
-    void testCreateBankTransferPaymentNullReferenceCode() {
-        paymentData.put("bankName", "Bank ABC");
-        paymentData.put("referenceCode", null);
-        Payment payment = new Payment("payment-uuid-7", PaymentMethod.BANK_TRANSFER.getValue(), paymentData);
-        assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
+    private static Stream<Arguments> provideInvalidBankTransferPaymentData() {
+        return Stream.of(
+                Arguments.of(" ", "REF123456"),
+                Arguments.of(null, "REF123456"),
+                Arguments.of("Bank ABC", " "),
+                Arguments.of("Bank ABC", null)
+        );
     }
 
     // --- General Validation Tests ---
 
     @Test
     void testCreatePaymentWithNullPaymentData() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("payment-uuid-8", PaymentMethod.VOUCHER_CODE.getValue(), null);
-        });
+        assertThrows(IllegalArgumentException.class, () ->
+                new Payment("payment-uuid-8", PaymentMethod.VOUCHER_CODE.getValue(), null)
+        );
     }
+
 
     @Test
     void testCreatePaymentWithEmptyId() {
         paymentData.put("voucherCode", "ESHOP1234ABC5678");
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("", PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
-        });
+        assertThrows(IllegalArgumentException.class, () ->
+                new Payment("", PaymentMethod.VOUCHER_CODE.getValue(), paymentData)
+        );
     }
+
 
     @Test
     void testCreatePaymentWithNullId() {
         paymentData.put("voucherCode", "ESHOP1235ABC5678");
+        assertThrows(IllegalArgumentException.class, () ->
+                new Payment(null, PaymentMethod.VOUCHER_CODE.getValue(), paymentData)
+        );
+    }
+
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"", "INVALID_METHOD"})
+    void testCreatePaymentWithInvalidMethod(String paymentMethod) {
+        Map<String, String> paymentData = new HashMap<>();
+        paymentData.put("voucherCode", "ESHOP1234ABC5678");
+
         assertThrows(IllegalArgumentException.class, () -> {
-            new Payment(null, PaymentMethod.VOUCHER_CODE.getValue(), paymentData);
+            new Payment("payment-uuid-9", paymentMethod, paymentData);
         });
     }
 
-    @Test
-    void testCreatePaymentWithNullMethod() {
-        paymentData.put("voucherCode", "ESHOP1234ABC5678");
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("payment-uuid-9", null, paymentData);
-        });
-    }
-
-    @Test
-    void testCreatePaymentWithEmptyMethod() {
-        paymentData.put("voucherCode", "ESHOP1234ABC5678");
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("payment-uuid-9", "", paymentData);
-        });
-    }
-
-    @Test
-    void testCreatePaymentWithInvalidMethod() {
-        paymentData.put("voucherCode", "ESHOP1234ABC5678");
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Payment("payment-uuid-9", "INVALID_METHOD", paymentData);
-        });
-    }
 
 }

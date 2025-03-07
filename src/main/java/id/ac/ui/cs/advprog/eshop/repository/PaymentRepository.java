@@ -52,7 +52,7 @@ public class PaymentRepository {
     public List<Payment> findAllByMethod(String method) {
         return payments.values().stream()
                 .filter(payment -> payment.getMethod().equals(method))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

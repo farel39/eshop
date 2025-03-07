@@ -15,10 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
+
 import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(OrderController.class)
 @Import(OrderControllerTest.TestConfig.class)
-public class OrderControllerTest {
+class OrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -69,7 +67,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testShowCreateOrderForm() throws Exception {
+    void testShowCreateOrderForm() throws Exception {
         Mockito.when(productService.findAll()).thenReturn(Collections.emptyList());
         mockMvc.perform(get("/order/create"))
                 .andExpect(status().isOk())
@@ -77,14 +75,14 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testShowOrderHistoryForm() throws Exception {
+    void testShowOrderHistoryForm() throws Exception {
         mockMvc.perform(get("/order/history"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("OrderHistoryForm"));
     }
 
     @Test
-    public void testShowOrderHistory() throws Exception {
+    void testShowOrderHistory() throws Exception {
         String authorName = "John Doe";
         Product dummyProduct = createDummyProduct();
         Order order = new Order("order1", Collections.singletonList(dummyProduct),
@@ -100,7 +98,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testShowPaymentOrderPage() throws Exception {
+    void testShowPaymentOrderPage() throws Exception {
         String orderId = "12345";
         Product dummyProduct = createDummyProduct();
         Order order = new Order(orderId, Collections.singletonList(dummyProduct),
@@ -114,7 +112,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testPayOrder() throws Exception {
+    void testPayOrder() throws Exception {
         String orderId = "12345";
         Product dummyProduct = createDummyProduct();
         Order order = new Order(orderId, Collections.singletonList(dummyProduct),
@@ -134,7 +132,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testPayOrderNotFound() throws Exception {
+    void testPayOrderNotFound() throws Exception {
         String orderId = "nonExistentOrder";
         Mockito.when(orderService.findById(orderId)).thenReturn(null);
 
@@ -148,7 +146,7 @@ public class OrderControllerTest {
     // --- New tests for createOrder endpoint ---
 
     @Test
-    public void testCreateOrderWithoutProducts() throws Exception {
+    void testCreateOrderWithoutProducts() throws Exception {
         // When no productIds parameter is provided, expect an error.
         Mockito.when(productService.findAll()).thenReturn(Collections.emptyList());
 
@@ -162,7 +160,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testCreateOrderWithEmptyProductIds() throws Exception {
+    void testCreateOrderWithEmptyProductIds() throws Exception {
         Mockito.when(productService.findAll()).thenReturn(Collections.emptyList());
 
         // Pass an empty array to simulate productIds being provided but empty.
@@ -178,7 +176,7 @@ public class OrderControllerTest {
 
 
     @Test
-    public void testCreateOrderWithInvalidProducts() throws Exception {
+    void testCreateOrderWithInvalidProducts() throws Exception {
         // When productIds are provided but none match a valid product.
         String invalidProductId = "invalid-id";
         Mockito.when(productService.findById(invalidProductId)).thenReturn(null);
@@ -195,7 +193,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    public void testCreateOrderWithValidProducts() throws Exception {
+    void testCreateOrderWithValidProducts() throws Exception {
         // When valid productIds are provided, create the order.
         String validProductId = "valid-id";
         Product dummyProduct = createDummyProduct();

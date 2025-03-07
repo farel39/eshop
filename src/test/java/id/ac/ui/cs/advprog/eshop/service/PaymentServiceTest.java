@@ -106,18 +106,27 @@ class PaymentServiceTest {
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
                 () -> paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue()));
+
         assertEquals("Payment not found with id: " + payment.getId(), exception.getMessage());
-        verify(paymentRepository, times(0)).save(any(Payment.class));
+        verify(paymentRepository, never()).save(any());
     }
+
 
     @Test
     void testSetStatusWithNullPayment() {
-        // Test the branch when the passed Payment is null.
+        // Arrange: compute the status value outside the lambda.
+        String status = PaymentStatus.SUCCESS.getValue();
+
+        // Act & Assert: only call paymentService.setStatus inside the lambda.
         NoSuchElementException exception = assertThrows(NoSuchElementException.class,
-                () -> paymentService.setStatus(null, PaymentStatus.SUCCESS.getValue()));
+                () -> paymentService.setStatus(null, status));
+
+        // Verify the exception message and repository behavior.
         assertEquals("Payment not found", exception.getMessage());
         verify(paymentRepository, never()).save(any(Payment.class));
     }
+
+
 
     @Test
     void testSetStatusToSuccessUpdatesOrder() {
